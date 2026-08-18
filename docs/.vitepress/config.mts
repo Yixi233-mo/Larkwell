@@ -37,7 +37,7 @@ export default defineConfig({
     outline: [2, 6],
     nav: [
       { text: '首页', link: '/' },
-      { text: '知识库', link: '/docs/', activeMatch: '/docs/' }
+      { text: '知识库', link: 'https://www.yuque.com/yuqueyonghu-dg6ehw/slk2dt', target: '_blank' }
     ],
     sidebar: {
       "/docs/": await genYuqueSideBar('/docs'),
