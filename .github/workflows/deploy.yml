@@ -79,20 +79,20 @@ jobs:
           rm -rf content-temp
 
           # 兜底：确保 /docs/ 路由存在（避免顶部导航「知识库」点进去 404）
+          # 注：私有仓库 docs/ 正常情况下应已包含 index.md，此兜底仅防极端情况
           if [ ! -f docs/docs/index.md ]; then
-            cat > docs/docs/index.md <<'MD'
----
-# https://vitepress.dev/reference/default-theme-home-page
-title: 知识库首页
----
-
-# 知识库
-
-📚 语雀文档正在同步中…请稍后再来查看完整内容。
-
-如果您是站点管理员，请先运行 [私有仓库 `larkwell-content` 的 Sync from Yuque workflow](https://github.com/Yixi233-mo/larkwell-content/actions/workflows/sync.yml) 从语雀拉取最新文档。
-MD
-            echo "✅ 已生成 docs/docs/index.md 占位文件"
+            printf '%s\n' \
+              '---' \
+              'title: 知识库首页' \
+              '---' \
+              '' \
+              '# 知识库' \
+              '' \
+              '语雀文档正在同步中...请稍后再来查看完整内容。' \
+              '' \
+              '如果您是站点管理员，请先在私有仓库 larkwell-content 触发 Sync from Yuque workflow 从语雀拉取最新文档。' \
+              > docs/docs/index.md
+            echo "已生成 docs/docs/index.md 占位文件"
           fi
 
       - name: Setup Node.js
