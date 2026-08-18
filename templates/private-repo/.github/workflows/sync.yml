@@ -18,6 +18,10 @@ on:
 permissions:
   contents: write  # 提交同步内容需要
 
+# 解决 Node.js 20 弃用告警：允许 GitHub Actions JavaScript 运行时默认使用 Node 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   sync:
     runs-on: ubuntu-latest
@@ -30,11 +34,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # 私有仓库内容轻量，优先用 npm install（避免 lockfile 缺失/不一致报错）
+        run: npm install --no-audit --no-fund
 
       - name: Elog sync (从语雀拉取文档)
         env:

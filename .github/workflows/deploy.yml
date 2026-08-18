@@ -26,6 +26,10 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
+# 解决 Node.js 20 弃用告警：允许 GitHub Actions JavaScript 运行时默认使用 Node 24
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -94,7 +98,7 @@ MD
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Setup Pages
