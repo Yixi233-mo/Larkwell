@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Elog 配置文件 - Larkwell 私有内容仓库
  * 此文件在私有仓库中使用，从语雀拉取文档到 docs/
  */
@@ -22,7 +22,7 @@ module.exports = {
       filename: 'title',
       format: 'markdown',
       catalog: true,
-      formatExt: './elog.format.cjs'
+      formatExt: './elog.format.js'
     }
   },
   image: {
