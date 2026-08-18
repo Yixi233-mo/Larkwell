@@ -2,7 +2,6 @@
   "name": "larkwell-content",
   "version": "1.0.0",
   "description": "Larkwell 私有内容仓库 - 从语雀同步的文档",
-  "type": "module",
   "scripts": {
     "elog:sync": "elog sync",
     "elog:clean": "elog clean"
