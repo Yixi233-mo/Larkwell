@@ -44,18 +44,52 @@ jobs:
 
       - name: Sync content into docs/docs/
         run: |
+          set -e
           # 确保目标目录存在
           mkdir -p docs/docs docs/images
-          # 把私有仓库的 docs/ 内容同步到公共仓库的 docs/docs/
-          # rsync 保留目录结构，删除目标中已不存在的文件
-          rsync -av --delete \
-            content-temp/docs/ docs/docs/
-          # 图片资源
-          if [ -d content-temp/images ]; then
-            rsync -av --delete content-temp/images/ docs/images/
+
+          # 调试：打印私有仓库 checkout 后的目录结构
+          echo "--- 私有仓库内容结构 ---"
+          ls -la content-temp/ || echo "(content-temp 不存在)"
+
+          # 文档内容同步（docs/ 必须先存在，否则跳过但不报错，便于首次空仓库构建排障）
+          if [ -d content-temp/docs ] && [ -n "$(ls -A content-temp/docs 2>/dev/null)" ]; then
+            rsync -av --delete \
+              content-temp/docs/ docs/docs/
+            echo "✅ docs/ 内容同步完成"
+          else
+            echo "⚠️  私有仓库 docs/ 为空或不存在，跳过同步"
+            echo "   解决方法：先运行私有仓库 larkwell-content 的 Sync from Yuque workflow，"
+            echo "   它会从语雀拉取文档后自动 dispatch 触发本 workflow 重新构建。"
           fi
+
+          # 图片资源同步
+          if [ -d content-temp/images ] && [ -n "$(ls -A content-temp/images 2>/dev/null)" ]; then
+            rsync -av --delete content-temp/images/ docs/images/
+            echo "✅ images/ 内容同步完成"
+          else
+            echo "ℹ️  私有仓库 images/ 为空或不存在，跳过图片同步"
+          fi
+
           # 清理临时目录
           rm -rf content-temp
+
+          # 兜底：确保 /docs/ 路由存在（避免顶部导航「知识库」点进去 404）
+          if [ ! -f docs/docs/index.md ]; then
+            cat > docs/docs/index.md <<'MD'
+---
+# https://vitepress.dev/reference/default-theme-home-page
+title: 知识库首页
+---
+
+# 知识库
+
+📚 语雀文档正在同步中…请稍后再来查看完整内容。
+
+如果您是站点管理员，请先运行 [私有仓库 `larkwell-content` 的 Sync from Yuque workflow](https://github.com/Yixi233-mo/larkwell-content/actions/workflows/sync.yml) 从语雀拉取最新文档。
+MD
+            echo "✅ 已生成 docs/docs/index.md 占位文件"
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
