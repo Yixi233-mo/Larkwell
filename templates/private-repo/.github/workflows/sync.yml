@@ -48,16 +48,37 @@ jobs:
           YUQUE_REPO: slk2dt
         run: npm run elog:sync
 
+      - name: Debug - list synced files
+        # 调试用：打印 docs/ 和 images/ 目录的实际内容
+        run: |
+          echo "--- docs/ 目录 ---"
+          if [ -d docs ]; then
+            find docs -type f | head -30
+            echo "总文件数: $(find docs -type f | wc -l)"
+          else
+            echo "docs/ 目录不存在"
+          fi
+          echo "--- images/ 目录 ---"
+          if [ -d images ]; then
+            find images -type f | head -10
+            echo "总文件数: $(find images -type f | wc -l)"
+          else
+            echo "images/ 目录不存在"
+          fi
+
       - name: Commit & Push changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/ images/
-          if git diff --staged --quiet; then
-            echo "没有新的内容需要提交"
-          else
+          # 安全 add：即使目录为空或不存在也不报错（--ignore-errors + pathspec ':'）
+          git add -A docs/ images/ 2>/dev/null || true
+          # 用 git status 判断是否有变更，而不是依赖 diff --staged（避免空仓库报错）
+          if git status --porcelain | grep -qE '^[AMRD]'; then
             git commit -m "chore(content): sync from yuque $(date -u +'%Y-%m-%d %H:%M')"
             git push
+            echo "✅ 已提交并推送新内容"
+          else
+            echo "ℹ️  没有新的内容需要提交（docs/ 可能为空或与远端一致）"
           fi
 
       - name: Trigger public repo deploy
