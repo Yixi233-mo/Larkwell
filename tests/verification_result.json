@@ -1,0 +1,153 @@
+{
+  "project": "Larkwell",
+  "timestamp": "2026-08-18T15:29:26.412764",
+  "checks": [
+    {
+      "name": "项目根目录",
+      "status": "PASS",
+      "message": "E:\\plan\\qwen\\yuque-vitepress"
+    },
+    {
+      "name": "src 目录",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "docs 目录",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "static 目录",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "scripts 目录",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "package.json",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "requirements.txt",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": ".env",
+      "status": "PASS",
+      "message": "环境配置文件"
+    },
+    {
+      "name": "elog.config.js",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "README.md",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "启动脚本 (Windows)",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "启动脚本 (PowerShell)",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "utils.logger 模块",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "utils.config 模块",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "   - Collection 配置",
+      "status": "PASS",
+      "message": "当前值: larkwell_knowledge"
+    },
+    {
+      "name": "memory 模块",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "cleaning.rules 模块",
+      "status": "PASS",
+      "message": "规则数量: 5"
+    },
+    {
+      "name": "tools 模块",
+      "status": "PASS",
+      "message": "工具数量: 6"
+    },
+    {
+      "name": "indexing.document_loader 模块",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "indexing.git_watcher 模块",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "rag 模块",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "agent 模块",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "app 模块 (FastAPI)",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "VitePress config.mts",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "docs/index.md",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "   - 标题为 Larkwell",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "品牌一致性 - package.json",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "品牌一致性 - README.md",
+      "status": "PASS",
+      "message": ""
+    },
+    {
+      "name": "品牌一致性 - index.html",
+      "status": "PASS",
+      "message": ""
+    }
+  ],
+  "passed": 29,
+  "failed": 0
+}

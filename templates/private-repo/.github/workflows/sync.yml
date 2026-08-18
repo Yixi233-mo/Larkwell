@@ -1,0 +1,68 @@
+# Larkwell 私有内容仓库 - 语雀同步工作流
+# 作用：定时从语雀拉取最新文档，提交到私有仓库
+# 触发：每日凌晨 3 点（北京时间）、手动触发、push 到 main
+name: Sync from Yuque
+
+on:
+  schedule:
+    - cron: '0 19 * * *'  # UTC 19:00 = 北京时间次日 03:00
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'elog.config.cjs'
+      - 'elog.format.cjs'
+      - 'package.json'
+      - '.github/workflows/sync.yml'
+
+permissions:
+  contents: write  # 提交同步内容需要
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Elog sync (从语雀拉取文档)
+        env:
+          YUQUE_TOKEN: ${{ secrets.YUQUE_TOKEN }}
+          YUQUE_LOGIN: yuqueyonghu-dg6ehw
+          YUQUE_REPO: slk2dt
+        run: npm run elog:sync
+
+      - name: Commit & Push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/ images/
+          if git diff --staged --quiet; then
+            echo "没有新的内容需要提交"
+          else
+            git commit -m "chore(content): sync from yuque $(date -u +'%Y-%m-%d %H:%M')"
+            git push
+          fi
+
+      - name: Trigger public repo deploy
+        # 私有仓库同步完成后，触发公共仓库重新构建部署
+        env:
+          DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+        if: env.DISPATCH_TOKEN != ''
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $DISPATCH_TOKEN" \
+            https://api.github.com/repos/Yixi233-mo/Larkwell/dispatches \
+            -d '{"event_type":"content-updated"}'

@@ -1,0 +1,7 @@
+node_modules/
+elog.cache.json
+elog.cache.shorturl.json
+.env
+.env.local
+*.log
+.DS_Store

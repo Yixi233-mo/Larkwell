@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Larkwell AI 助手 - 语雀知识库问答</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .chat-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.assistant .message-content {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.system {
+            justify-content: center;
+        }
+
+        .message.system .message-content {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.9em;
+            max-width: 90%;
+        }
+
+        .tool-call {
+            background: #e7f3ff;
+            border-left: 4px solid #0d6efd;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 0.85em;
+            border-radius: 4px;
+        }
+
+        .tool-call .tool-name {
+            font-weight: bold;
+            color: #0d6efd;
+        }
+
+        .chat-input-area {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .thinking-indicator {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border-radius: 18px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .thinking-indicator::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+        }
+
+        .btn-send:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        .stats-bar {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            font-size: 0.85em;
+            color: #6c757d;
+        }
+
+        .feature-tags {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .feature-tag {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <!-- 头部 -->
+        <div class="chat-header">
+            <h2>🐦 Larkwell AI 助手</h2>
+            <p class="mb-0">基于语雀知识库的智能问答助手</p>
+            <div class="feature-tags">
+                <span class="feature-tag">📚 知识库检索</span>
+                <span class="feature-tag">🔄 语雀同步</span>
+                <span class="feature-tag">🤖 多轮对话</span>
+            </div>
+        </div>
+
+        <!-- 消息区域 -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="message system">
+                <div class="message-content">
+                    👋 你好！我是 Larkwell AI 助手。<br>
+                    我可以帮你：<br>
+                    • <b>查询知识库</b> - 提问关于语雀文档的内容<br>
+                    • <b>同步语雀</b> - 更新最新的语雀文档<br>
+                    • <b>搜索信息</b> - 查找互联网上的最新内容<br>
+                    • <b>执行命令</b> - 运行终端命令<br><br>
+                    试试问我："知识库中有什么内容？"
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计栏 -->
+        <div class="stats-bar" id="statsBar">
+            <span id="statsText">对话轮数: 0 | 工具调用: 0</span>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="chat-input-area">
+            <div class="input-group">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="userInput"
+                    placeholder="输入你的问题... (例如：知识库中有什么内容？)"
+                    onkeypress="if(event.key === 'Enter') sendMessage()"
+                >
+                <button class="btn btn-send" onclick="sendMessage()">
+                    发送
+                </button>
+                <button class="btn btn-outline-secondary" onclick="clearHistory()">
+                    清空
+                </button>
+            </div>
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="streamMode" checked>
+                <label class="form-check-label" for="streamMode">
+                    启用流式响应（实时显示思考过程）
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let messageCount = 0;
+        let toolCallCount = 0;
+
+        function addMessage(role, content, isSystem = false) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isSystem ? 'system' : role}`;
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = content;
+
+            messageDiv.appendChild(contentDiv);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            return contentDiv;
+        }
+
+        function addToolCall(toolName, args, result) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const toolDiv = document.createElement('div');
+            toolDiv.className = 'tool-call';
+            toolDiv.innerHTML = `
+                <div class="tool-name">🔧 ${toolName}</div>
+                <div>参数: ${JSON.stringify(args)}</div>
+                <div>结果: ${result.substring(0, 200)}${result.length > 200 ? '...' : ''}</div>
+            `;
+            messagesDiv.appendChild(toolDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            toolCallCount++;
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('statsText').textContent =
+                `对话轮数: ${messageCount} | 工具调用: ${toolCallCount}`;
+        }
+
+        async function sendMessageStream(userMessage) {
+            const contentDiv = addMessage('assistant', '');
+            let fullResponse = '';
+
+            try {
+                const response = await fetch('/chat/stream', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: userMessage})
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+
+                    const text = decoder.decode(value);
+                    const lines = text.split('\n');
+
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            try {
+                                const data = JSON.parse(line.substring(6));
+
+                                if (data.type === 'thinking') {
+                                    contentDiv.innerHTML = `<span class="thinking-indicator">${data.content}</span>`;
+                                } else if (data.type === 'tool_call') {
+                                    addToolCall(data.tool, data.args, '执行中...');
+                                } else if (data.type === 'tool_result') {
+                                    const toolCalls = document.querySelectorAll('.tool-call');
+                                    if (toolCalls.length > 0) {
+                                        const lastCall = toolCalls[toolCalls.length - 1];
+                                        const resultDiv = lastCall.querySelector('div:last-child');
+                                        resultDiv.textContent = `结果: ${data.result.substring(0, 200)}${data.result.length > 200 ? '...' : ''}`;
+                                    }
+                                } else if (data.type === 'token') {
+                                    fullResponse += data.content;
+                                    contentDiv.textContent = fullResponse;
+                                    document.getElementById('chatMessages').scrollTop =
+                                        document.getElementById('chatMessages').scrollHeight;
+                                } else if (data.type === 'done') {
+                                    if (!fullResponse) {
+                                        fullResponse = data.response;
+                                        contentDiv.textContent = fullResponse;
+                                    }
+                                } else if (data.type === 'error') {
+                                    contentDiv.textContent = `❌ 错误: ${data.message}`;
+                                }
+                            } catch (e) {
+                                console.error('解析 SSE 数据失败:', e);
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                contentDiv.textContent = `❌ 请求失败: ${error.message}`;
+            }
+        }
+
+        async function sendMessageSync(userMessage) {
+            const thinkingDiv = addMessage('assistant', '正在思考...');
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({message: userMessage, stream: false})
+                });
+
+                const data = await response.json();
+
+                if (data.tool_calls && data.tool_calls.length > 0) {
+                    thinkingDiv.remove();
+                    data.tool_calls.forEach(call => {
+                        addToolCall(call.tool, call.args, call.result);
+                    });
+                    addMessage('assistant', data.response);
+                } else {
+                    thinkingDiv.textContent = data.response;
+                }
+            } catch (error) {
+                thinkingDiv.textContent = `❌ 请求失败: ${error.message}`;
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            addMessage('user', message);
+            input.value = '';
+            messageCount++;
+            updateStats();
+
+            const streamMode = document.getElementById('streamMode').checked;
+            if (streamMode) {
+                await sendMessageStream(message);
+            } else {
+                await sendMessageSync(message);
+            }
+        }
+
+        async function clearHistory() {
+            if (!confirm('确定要清空所有对话历史吗？')) return;
+
+            try {
+                await fetch('/history', {method: 'DELETE'});
+                document.getElementById('chatMessages').innerHTML = `
+                    <div class="message system">
+                        <div class="message-content">
+                            🗑️ 对话历史已清空。有什么可以帮助你的吗？
+                        </div>
+                    </div>
+                `;
+                messageCount = 0;
+                toolCallCount = 0;
+                updateStats();
+            } catch (error) {
+                alert('清空失败: ' + error.message);
+            }
+        }
+
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/history');
+                const data = await response.json();
+
+                if (data.messages && data.messages.length > 0) {
+                    document.getElementById('chatMessages').innerHTML = '';
+                    data.messages.forEach(msg => {
+                        addMessage(msg.role, msg.content);
+                        if (msg.tool_calls) {
+                            msg.tool_calls.forEach(call => {
+                                addToolCall(call.tool, call.args, call.result);
+                            });
+                        }
+                    });
+                    messageCount = data.stats.user_messages;
+                    toolCallCount = data.messages.filter(m => m.tool_calls).length;
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('加载历史失败:', error);
+            }
+        });
+    </script>
+</body>
+</html>

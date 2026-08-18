@@ -1,0 +1,21 @@
+{
+  "name": "larkwell",
+  "version": "1.0.0",
+  "description": "Larkwell - 语雀文档同步与 AI 问答助手",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "elog:sync": "elog sync",
+    "elog:clean": "elog clean",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": ["yuque", "vitepress", "elog", "ai", "rag", "larkwell"],
+  "author": "Larkwell Team",
+  "license": "MIT",
+  "dependencies": {
+    "@elog/cli": "^0.13.2",
+    "vitepress": "^1.0.0-rc.27"
+  }
+}

@@ -1,0 +1,89 @@
+# Larkwell 文档站 GitHub Pages 部署工作流
+# 触发条件：main 分支 push、workflow_dispatch 手动触发、私有仓库内容更新后触发
+name: Deploy VitePress to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'utils/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/deploy.yml'
+  repository_dispatch:
+    types: [content-updated]  # 私有仓库内容更新后通过 webhook 触发
+  workflow_dispatch:
+
+# GitHub Pages 部署权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同时只允许一个部署任务运行
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout public repo (larkwell)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # lastUpdated 需要完整历史
+
+      - name: Checkout private content repo (larkwell-content)
+        uses: actions/checkout@v4
+        with:
+          repository: Yixi233-mo/larkwell-content
+          token: ${{ secrets.ACCESS_TOKEN }}  # GitHub PAT，需有读取私有仓库权限
+          path: content-temp
+
+      - name: Sync content into docs/docs/
+        run: |
+          # 确保目标目录存在
+          mkdir -p docs/docs docs/images
+          # 把私有仓库的 docs/ 内容同步到公共仓库的 docs/docs/
+          # rsync 保留目录结构，删除目标中已不存在的文件
+          rsync -av --delete \
+            content-temp/docs/ docs/docs/
+          # 图片资源
+          if [ -d content-temp/images ]; then
+            rsync -av --delete content-temp/images/ docs/images/
+          fi
+          # 清理临时目录
+          rm -rf content-temp
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build VitePress
+        run: npm run docs:build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/.vitepress/dist
+
+  deploy:
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
