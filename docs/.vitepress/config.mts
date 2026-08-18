@@ -1,6 +1,6 @@
 import { defineConfig } from 'vitepress'
 import { genYuqueSideBar } from "../../utils/route.js";
-import { StarSVG, GitHubHomeSVG } from "../../utils/assists.js";
+import { StarSVG } from "../../utils/assists.js";
 
 // Larkwell 项目 VitePress 配置
 export default defineConfig({
@@ -37,7 +37,8 @@ export default defineConfig({
     outline: [2, 6],
     nav: [
       { text: '首页', link: '/' },
-      { text: '知识库', link: 'https://www.yuque.com/yuqueyonghu-dg6ehw/slk2dt', target: '_blank' }
+      { text: '知识库', link: 'https://www.yuque.com/yuqueyonghu-dg6ehw/slk2dt', target: '_blank' },
+      { text: '文档', link: '/docs/', activeMatch: '/docs/' }
     ],
     sidebar: {
       "/docs/": await genYuqueSideBar('/docs'),
@@ -49,8 +50,8 @@ export default defineConfig({
     socialLinks: [
       // Star 入口（五角星图标，指向 GitHub 仓库 star 页面）
       { icon: { svg: StarSVG }, link: "https://github.com/Yixi233-mo/Larkwell" },
-      // GitHub 个人主页入口
-      { icon: { svg: GitHubHomeSVG }, link: "https://github.com/Yixi233-mo" }
+      // GitHub 个人主页入口（使用 VitePress 内置图标）
+      { icon: 'github', link: "https://github.com/Yixi233-mo" }
     ],
     footer: {
       message: 'Powered by <a href="https://www.yuque.com/yuqueyonghu-dg6ehw/slk2dt" target="_blank">语雀知识库</a> & <a href="https://vitepress.dev" target="_blank">VitePress</a> with <a href="https://github.com/LetTTGACO/elog" target="_blank">Elog</a>',
