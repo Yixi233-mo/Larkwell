@@ -1,8 +1,13 @@
-// 语雀图标 - 纯 SVG 矢量绘制（鸟形剪影 + 书页）
-// 不依赖 base64 PNG，避免在 GitHub Pages CSP 环境下渲染成裂图
-export const YuQueSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-  '<path d="M3 7l9-4 9 4-9 4-9-4z"/>' +
-  '<path d="M3 7v6c0 1 4 3 9 3s9-2 9-3V7"/>' +
-  '<path d="M12 11v8"/>' +
-  '<circle cx="18" cy="6" r="3" fill="currentColor" stroke="none"/>' +
+// Larkwell 项目自定义 SVG 图标
+// 所有图标用纯矢量绘制，stroke="currentColor" 跟随 VitePress 主题色
+
+// 五角星图标 - 用于 GitHub Star 入口
+export const StarSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linejoin="round">' +
+  '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>' +
+  '</svg>'
+
+// GitHub 图标 - 用于个人主页入口
+// 基于 GitHub 官方 logo (octicon mark-github), 纯 SVG 矢量
+export const GitHubHomeSVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="24" height="24" fill="currentColor">' +
+  '<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.67.58-3.24-1.15-3.24-1.15-.44-1.11-1.08-1.41-1.08-1.41-.88-.6.07-.59.07-.59.97.07 1.49 1 1.49 1 1.41 2.41 3.7 1.72 4.6 1.32.14-.82.55-1.41.55-1.41-2.33-.27-4.78-1.17-4.78-5.2 0-1.15.41-2.09 1.09-2.83.11-.27.48-1.34-.11-2.79 0 0-.89-.29-2.92 1.14-.85-.24-1.76-.36-2.66-.36-.91 0-1.81.12-2.66.36-2.03-1.43-2.92-1.14-2.92-1.14-.59 1.45-.22 2.52-.11 2.79.68.74 1.09 1.68 1.09 2.83 0 4.04-2.45 4.92-4.79 5.18.38.33.72.98.72 1.98 0 1.43-.01 2.59-.01 2.94 0 .21.15.46.55.38C13.71 14.53 16 11.54 16 8c0-4.42-3.58-8-8-8z"/>' +
   '</svg>'
