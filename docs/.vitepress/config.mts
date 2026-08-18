@@ -10,8 +10,9 @@ export default defineConfig({
   lastUpdated: true,
   cleanUrls: false,
   ignoreDeadLinks: false,
-  // GitHub Pages 部署在 https://yixi233-mo.github.io/larkwell/ 子路径下，需配置 base
-  base: "/larkwell/",
+  // GitHub Pages 部署在 https://yixi233-mo.github.io/Larkwell/ 子路径下，需配置 base
+  // 注意：GitHub Pages URL 大小写敏感，必须与仓库名大小写完全一致
+  base: "/Larkwell/",
   // GitHub Pages 仓库源信息（用于 lastUpdated 等功能）
   repo: "Yixi233-mo/Larkwell",
   repoBranch: "main",
