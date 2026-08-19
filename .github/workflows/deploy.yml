@@ -58,9 +58,11 @@ jobs:
 
           # 文档内容同步（docs/ 必须先存在，否则跳过但不报错，便于首次空仓库构建排障）
           if [ -d content-temp/docs ] && [ -n "$(ls -A content-temp/docs 2>/dev/null)" ]; then
+            # 排除 index.md：保留公共仓库的总览页（纯介绍版），不被私有仓库覆盖
             rsync -av --delete \
+              --exclude='index.md' \
               content-temp/docs/ docs/docs/
-            echo "✅ docs/ 内容同步完成"
+            echo "✅ docs/ 内容同步完成（已排除 index.md，保留公共仓库总览页）"
           else
             echo "⚠️  私有仓库 docs/ 为空或不存在，跳过同步"
             echo "   解决方法：先运行私有仓库 larkwell-content 的 Sync from Yuque workflow，"

@@ -2,6 +2,11 @@
 title: 知识库
 ---
 
+<script setup>
+// 仅本地开发环境显示 AI 问答入口，线上构建时 isDev=false 自动移除
+const isDev = import.meta.env.MODE === 'development'
+</script>
+
 # Larkwell 知识库
 
 欢迎来到 Larkwell 知识库——这里存放着我从语雀同步过来的所有技术笔记，经过清洗、归类和索引，形成了一个可以随时检索、对话的本地知识库。
@@ -48,6 +53,12 @@ Larkwell 不是一个普通的文档站。它是我把散落在语雀里的笔�
 
 如果你不确定具体要查什么，或者想通过提问来探索知识库，可以直接在对话窗口输入问题。AI 助手会检索知识库中的相关内容，给出带来源引用的回答。
 
+<ClientOnly>
+  <a v-if="isDev" href="http://localhost:8000/" target="_blank" class="ai-entry-btn">
+    🤖 进入 AI 问答 →
+  </a>
+</ClientOnly>
+
 ## 写在最后
 
 Larkwell 本质上是一个为我自己打造的"第二大脑"——把写过的笔记变成可以检索、可以对话、可以反复调用的知识资产。
@@ -57,3 +68,20 @@ Larkwell 本质上是一个为我自己打造的"第二大脑"——把写过的
 ------
 
 **Larkwell** — 让写过的笔记，真的成为记得住的知识。
+
+<style>
+.ai-entry-btn {
+  display: inline-block;
+  padding: 12px 28px;
+  background: var(--vp-brand-color, #3451b2);
+  color: #fff !important;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-top: 1rem;
+  transition: background 0.2s;
+}
+.ai-entry-btn:hover {
+  background: var(--vp-brand-color-dark, #56c2ff);
+}
+</style>
