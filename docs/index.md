@@ -8,14 +8,8 @@ hero:
   tagline: 语雀文档同步 · 智能检索 · AI 问答
   actions:
     - theme: brand
-      text: 📚 知识库总览
+      text: 📚 进入知识库
       link: /docs/
-    - theme: alt
-      text: 📂 按分类浏览
-      link: /docs/#按分类浏览
-    - theme: alt
-      text: 📅 按时间浏览
-      link: /docs/#按时间线浏览
 
 features:
   - icon: 📝
