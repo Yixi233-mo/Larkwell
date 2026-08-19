@@ -32,7 +32,6 @@ elog.cache.shorturl.json
 .vitepress/dist
 docs/.vitepress/cache/
 docs/.vitepress/dist/
-docs/docs/
 docs/images/
 
 # ==================== Git 仓库 ====================
