@@ -87,6 +87,17 @@ class Config:
     CHUNK_SIZE: int = int(os.getenv("CHUNK_SIZE", "512"))
     CHUNK_OVERLAP: int = int(os.getenv("CHUNK_OVERLAP", "64"))
 
+    # ==================== 清洗 LLM 配置 ====================
+    # CLEANING_LLM_METADATA 是否在清洗时调用 LLM 自动生成 category/tags/description
+    #   true  : 启用（需 Ollama 或云端 API 可用，会拖慢清洗速度）
+    #   false : 禁用（清洗只做格式修复，不调 LLM，速度最快）
+    CLEANING_LLM_METADATA: bool = os.getenv("CLEANING_LLM_METADATA", "false").lower() == "true"
+    # CLEANING_LLM_MODEL 清洗专用模型覆盖（不设则复用主 LLM_BACKEND 配置）
+    #   建议用更小/更快的模型，例如 "qwen:1.7b" 或 "Qwen/Qwen2.5-1.5B-Instruct"
+    CLEANING_LLM_MODEL: str = os.getenv("CLEANING_LLM_MODEL", "")
+    # 文档正文截断长度（避免 LLM token 爆炸）
+    CLEANING_LLM_MAX_CONTENT_CHARS: int = int(os.getenv("CLEANING_LLM_MAX_CONTENT_CHARS", "2000"))
+
     # ==================== 检索配置 ====================
     TOP_K: int = int(os.getenv("TOP_K", "5"))
     SIMILARITY_THRESHOLD: float = float(os.getenv("SIMILARITY_THRESHOLD", "0.5"))
